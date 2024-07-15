@@ -19,32 +19,47 @@ The pipeline can be run using storage on AWS S3 buckets and AWS EC2 computationa
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#getting-started-install-instructions
 
 # Configure the Run
-## Local run or AWS
-## Results Directories
+When this analysis was originally run, all pipelines were run on AWS Batch while all secondary analyses were done locally.  
+
+If running locally, make the following changes to the run:
+1. In the file rnaseq-cbra-rhlr-crc-mukherjee.config, change the line `process.executor = 'awsbatch'` to `process.executor = 'local'`.  
+2. Change directories referenced in the nextflow commands below to local directories. These can be relative directories.   
+
+```
+export SRA_DOWNLOAD_DIR="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/raw/"
+export ASSETS_DIR="assets"
+export REFERENCES_DIR="references"
+export RNASEQ_RESULTS_DIR="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/results/"
+export WORK_DIR="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/work/"
+```
 
 # Run Everything
 
-# Create directories
-```
-mkdir references & \
-mkdir assets & \ 
-mkdir results & \
-mkdir work
-```
 # Get SRA data
 
 ```
-nextflow run -r 1.11.0 nf-core/fetchngs \
+sudo nextflow run -r 1.11.0 nf-core/fetchngs \
    -c rnaseq-cbra-rhlr-crc-mukherjee.config \
    -profile trestle \
    --nf_core_pipeline rnaseq \
    --nf_core_rnaseq_strandedness reverse \
    --input assets/ids.csv \
-   --outdir s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/raw/ \
-   -work-dir s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/work/ \
+   --outdir $SRA_DOWNLOAD_DIR \
+   -work-dir $WORK_DIR \
+   -resume
 ```
 
+Move the samplesheet to the assets folder (or bucket, if running on AWS):
+
+Local Run:
+`mv` 
+
+AWS Batch:
+`aws s3 cp` 
+
 # Get Reference Files
+
+If running locally, run the following code block to collect the 
 ```
 cd references && \
 
@@ -58,10 +73,19 @@ gunzip Pseudomonas_aeruginosa_UCBPP-PA14_109.gff.gz && \
 
 cd ..
 ```
+If running on AWS, after running the scripts above, move the reference files to an S3 bucket. 
 
-# Add crcZ to Annotations
+```
+aws s3 cp 
+```
+
+
+# Add crcZ to Annotations and Clean Files
 Use gffutils to add crc to the gff file and clean up some names to prepare for the nf-core pipeline.
 
+`docker exec container python clean_gff.py`
+
 # Running the nf-core RNA-seq pipeline
+
 
 # Running the Secondary Analysis
