@@ -52,12 +52,14 @@ wget https://pseudomonas.com/downloads/pseudomonas/pgd_r_22_1/Pseudomonas_aerugi
 
 wget https://pseudomonas.com/downloads/pseudomonas/pgd_r_22_1/Pseudomonas_aeruginosa_UCBPP-PA14_109/Pseudomonas_aeruginosa_UCBPP-PA14_109.fna.gz && \
 
-gunzip Pseudomonas_aeruginosa_
+gunzip Pseudomonas_aeruginosa_UCBPP-PA14_109.fna.gz && \
+
+gunzip Pseudomonas_aeruginosa_UCBPP-PA14_109.gff.gz && \
 
 cd ..
 ```
 
-# Add crc to Annotations
+# Add crcZ to Annotations
 Use gffutils to add crc to the gff file and clean up some names to prepare for the nf-core pipeline.
 
 # Running the nf-core RNA-seq pipeline
