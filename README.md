@@ -32,8 +32,8 @@ If running locally, make the following changes to the run:
 ```
 export s3_top_dir="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/"
 export sra_download_dir="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/raw/"
-export assets_dir="assets"
-export references_dir="references"
+export assets_dir="${PWD}/assets"
+export references_dir="${PWD}/references"
 export rnaseq_results_dir="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/results/"
 export work_dir="s3://mukherjee-lab/rnaseq-cbra-rhlr-crc-mukherjee/work/"
 ```
@@ -84,7 +84,8 @@ cd ..
 # Add crcZ to Annotations and Clean Files
 Use gffutils to add crc to the gff file and clean up some names to prepare for the nf-core pipeline.
 
-`docker exec container python clean_gff.py`
+`docker run --rm -v "$PWD":"$PWD" quay.io/biocontainers/gffutils:0.13--pyh7cba7a3_0 python ${PWD}/clean_gff.py ${references_dir}/Pseudomonas_aeruginosa_UCBPP-PA14_109.gff ${references_dir}/Pseudomonas_aeruginosa_UCBPP-PA14_109_crcz.gff`
+
 
 # Running the nf-core RNA-seq pipeline
 
